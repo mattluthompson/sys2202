@@ -1,5 +1,6 @@
 # Script created by Matt Thompson (mlt2we) 
 
+# create new data frame w/ user numbers
 mental <- setNames(data.frame(matrix(ncol = 4, nrow = 0)), c('user','sum','num','score'))
 
 for (i in 0:59){
@@ -12,12 +13,12 @@ for (i in 0:59){
 }
 
 
-
+# analyze big 5 data
 bigFive <- read_csv('Survey/BigFive2.csv')
 
 bigFive <- filter(bigFive, type == 'post')
 
-
+#replace values w/ pos/neg scale, all datasets put on a -2 to 2 spectrum
 for (i in 1:length(bigFive$X1)) {
   for (j in 4:47) {
     print(paste(as.character(i), as.character(j), sep=','))
@@ -37,6 +38,7 @@ for (i in 1:length(bigFive$X1)) {
   }
 }
 
+#redo the columns (if not a factor in self worth, delete; if a positive factor, multiply by negative one to deduct from score)
 bigFive$`I am Talkative` <- NULL
 bigFive$`I Find Faults in Others` <- NULL
 bigFive$`I do a thorough Job` <- bigFive$`I do a thorough Job`*-1
@@ -81,6 +83,7 @@ bigFive$type <- NULL
 
 bigFive$score <- c(NA)
 
+#sum up rows
 for (i in 1:length(bigFive$uid)) {
   userRunningTotal = 0
   for (j in 2:21) {
@@ -89,6 +92,7 @@ for (i in 1:length(bigFive$uid)) {
   bigFive[[i, 22]] <- userRunningTotal
 }
 
+#add score to main key and average
 for (i in 0:59) {
   if (i < 10) {
     id = paste('u0',i, sep='')
@@ -107,6 +111,7 @@ for (i in 0:59) {
   }
 }
 
+#repeat above process for flourishing
 flourishing <- read_csv('Survey/FlourishingScale.csv')
 flourishing <- filter(flourishing, type == 'post')
 flourishing$type <- NULL
@@ -158,6 +163,7 @@ for (i in 0:59) {
   }
 }
 
+# repeat for loneliness
 loneliness <- read_csv('Survey/LonelinessScale2.csv')
 loneliness <- filter(loneliness, type == 'post')
 loneliness$X1 <- NULL
@@ -216,6 +222,7 @@ for (i in 0:59) {
   }
 }
 
+# repeat for phq
 phq = read_csv('Survey/PHQ-92.csv')
 phq <- filter(phq, type == 'post')
 phq$X1 <- NULL
@@ -267,9 +274,12 @@ for (i in 0:59) {
   }
 }
 
+# realized I wanted to flip the scale, so the more positive the score the better instead of worse
 
+mental$sum <- mental$sum * -1
+mental$score <- mental$score * -1
 
-
+write_csv(mental, 'self_worth_score.csv')
 
 
 
