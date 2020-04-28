@@ -104,7 +104,9 @@ ui <- fluidPage(
     br(),
     
     
-    plotOutput("plot1", click = "plot_click")
+    plotOutput("plot1", click = "plot_click"),
+    br(),
+    textOutput("suggestions")
   )
 )
 
@@ -125,8 +127,26 @@ server <- function(input,output){
   
   output$plot1 <- renderPlot({
     x <- seq(0, 5, by = .1)
-    y <- dnorm(x, mean = 2.220, sd = 0.5)
+    y <- dnorm(x, mean = 2.220592, sd = 0.5571346)
     plot(x, y)
+  })
+  
+  output$suggestions <- renderText({
+    if (answer() <1.106){
+      paste("You may have very low stress.")
+    }
+    else if (answer() <1.663){
+      paste("You may have low stress. Suggestions to reduce stress include:")
+    }
+    else if (answer() <2.777){
+      paste("You may have moderate stress. Suggestions to reduce stress include:")
+    }
+    else if (answer() <3.334){
+      paste("You may have high stress. Suggestions to reduce stress include:")
+    }
+    else if (answer() >=3.334){
+      paste("You may have very high stress. Suggestions to reduce stress include:")
+    }
   })
   
 }
