@@ -15,7 +15,7 @@ ui <- fluidPage(
     br(),
     
     numericInput(inputId="wkdy_running_mean",
-                 label="Around how many minutes do you spend running on an average weekday?",
+                 label="Around how many minutes do you spend running in an average week?",
                  value=1),
     br(),
     
@@ -97,7 +97,7 @@ ui <- fluidPage(
   ),
   
   mainPanel(
-    strong("The mental health score is a number, with higher values indicating a higher correlation with common
+    strong("The stress score is a number, with higher values indicating a higher correlation with common
            stressors of students."),
     br(),br(),
     textOutput("answer"),
@@ -106,7 +106,8 @@ ui <- fluidPage(
     
     plotOutput("plot1", click = "plot_click"),
     br(),
-    textOutput("suggestions")
+    textOutput("suggestions"),
+    
   )
 )
 
@@ -122,30 +123,36 @@ server <- function(input,output){
   })
   
   output$answer <- renderText({
-      paste("Your mental health score is ", (answer()), ".")
+      paste("Your mental health score is ", round((answer()), 3), ".")
   })
   
   output$plot1 <- renderPlot({
     x <- seq(0, 5, by = .1)
     y <- dnorm(x, mean = 2.220592, sd = 0.5571346)
-    plot(x, y)
+    plot(x,y,type="l",lwd=2,col="blue", main="Normal Stress Score of Survey Participants", xlab="Stress Score", ylab=" ")
+    x=seq(0,answer(),length=100)
+    y=dnorm(x,mean=2.220592,sd=0.5571346)
+    polygon(c(0,x,answer()),c(0,y,0),col="orange")
   })
   
   output$suggestions <- renderText({
     if (answer() <1.106){
-      paste("You may have very low stress.")
+      paste("You may have very high stress. Suggestions to reduce stress include: Increasing amount of daily physical activity (i.e. running);
+            contributing to class discussions, as well as conversing with others on a regular basis; and increasing amount of sleep.")
     }
     else if (answer() <1.663){
-      paste("You may have low stress. Suggestions to reduce stress include:")
+      paste("You may have high stress. Suggestions to reduce stress include: Increasing amount of daily physical activity (i.e. running);
+            contributing to class discussions, as well as conversing with others on a regular basis; and increasing amount of sleep.")
     }
     else if (answer() <2.777){
-      paste("You may have moderate stress. Suggestions to reduce stress include:")
+      paste("You may have moderate stress. Suggestions to reduce stress include: Increasing amount of daily physical activity (i.e. running);
+            contributing to class discussions, as well as conversing with others on a regular basis; and increasing amount of sleep.")
     }
     else if (answer() <3.334){
-      paste("You may have high stress. Suggestions to reduce stress include:")
+      paste("You may have low stress.")
     }
     else if (answer() >=3.334){
-      paste("You may have very high stress. Suggestions to reduce stress include:")
+      paste("You may have very low stress.")
     }
   })
   
