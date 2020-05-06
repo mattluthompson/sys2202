@@ -1,4 +1,5 @@
-
+#Data included in UVA Data folder on shared drive
+#File is named UVA_data.csv
 UVA_data <- read.csv("/Users/maxstjohn/UVA_Data.csv")
 
 
